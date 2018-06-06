@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=PT+Serif:400,400i,700|IBM+Plex+Sans:700');
+
+html, body {
+    padding: 0;
+    margin: 0;
+}
+
+#contents {
+    margin: auto;
+    max-width: 1150px;
+    padding-left: 25px;
+}
+
+h1 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 700;
+    font-size: 24pt;
+}
+
+h2 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 700;
+    font-size: 20pt;
+}
+
+h3 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 700;
+    font-size: 16pt;
+}
+
+p {
+    font-family: "PT Serif", serif;
+}
+
+.maze {
+    margin: auto;
+    display: block;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+canvas {
+    cursor: pointer;
+}
+
+#wilsons-size {
+    cursor: pointer;
+    font-weight: 700;
+    user-select: none;
+}
