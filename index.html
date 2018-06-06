@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="style/main.css">
+    </head>
+    
+    <body>
+        
+        <div id="contents">
+            <h1>Maze Generation Algorithms - An Exploration</h1>
+            
+            <p>
+                This webpage is dedicated to my exploration of 
+                <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm">
+                    maze generation algorithms
+                </a>.
+            </p>
+            
+            <p>
+                To begin, I did some research on maze generation.  There's a 
+                nice wikipedia page, which is linked above, that outlines a few 
+                of the more common ones. There's also a 
+                <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">
+                    fantastic resource
+                </a> 
+                I found that has animated implementations of every "perfect"
+                maze generation algorithm - that is, every algorithm that 
+                generates a maze with exactly one solution. I primarily used 
+                that resource for a list of every algorithm that I will be 
+                implementing, but it's also quite nice to visualize the manner
+                in which they work.
+            </p>
+            <p>
+                On this page, I will be attempting to do something similar 
+                to what was done on the page I linked: animating each 
+                algorithm and briefly describing what they do. Ideally,
+                this will become a good resource for people interested in
+                entry-level procedural generation as well as an interesting
+                read for those who are curious but lack a background in
+                computer science (or graph theory, for that matter).
+            </p>
+            <p>
+                And finally, without further ado... we begin.
+            </p>
+        
+            <h3>The Backtracking Algorithm</h3>
+            <p>
+                Some people also call this the randomized depth-first search
+                or the modified depth-first search.  The idea is relatively
+                simple: The algorithm branches out in a random direction 
+                until it branches itself into a corner.  Then, it backtracks,
+                or retraces its steps backwards, until it reaches a node 
+                from which it can once again branch out. It continues this
+                process until it cannot branch from any nodes, at which 
+                point the algorithm terminates because, by definition, the
+                maze must be completed.
+            </p>
+            <p>
+                It's probably easiest to understand when it can be
+                visualized, so here's an animation:
+            </p>
+            
+            <canvas id="backtracking-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                You can watch the concepts manifest themselves in the animation 
+                - the algorithm branches out randomly, periodically exploring
+                into a dead-end or corner. Each node it explores to is added 
+                to the list of open nodes, and is marked in pink. When a point 
+                is reached at which the branch can no longer continue exploring,
+                the algorithm backtracks. When it backtracks through a node that
+                it cannot explore from, it removes that node from the list of
+                open nodes, and the location turns white. A wave of pink becoming
+                white is therefore indicative of a long string of backtracking.
+            </p>
+            
+            <p>
+                Of course, the simplicity and speed of this algorithm does come
+                with a few slight disadvantages. Like most maze generation
+                algorithms, this one does NOT generate a uniform spanning 
+                tree. What does that mean, you ask? Well, "spanning tree" is 
+                just a pretentious way of saying maze in graph theory 
+                language. The word uniform, here, just means "chosen from 
+                all possible options, weighted equally." So "uniform spanning 
+                tree" just means a maze generated in such a way that it was
+                randomly selected from a list of every possible maze to be 
+                generated. This algorithm does not do that.
+            </p>
+            <p>
+                Despite its shortcomings, however, the ease of implementation
+                of thebacktracking algorithm combined with the adequacy of the 
+                mazes it generates makes it ideal as a goto algorithm for
+                this purpose. It's not great, but it's absolutely good enough.
+            </p>
+            
+            <h3>The Randomized Prim's Algorithm</h3>
+            
+            <p>
+                Prim's algorithm is an algorithm designed to find a minimum
+                spanning tree for a weighted graph. That probably sounds like
+                a lot more fancy graph theory language, and it absolutely is.
+                Frankly, you don't need to know what that means to understand
+                how the algorithm works. It's much the same as the backtracking
+                algorithm, with one key difference. Each turn, instead of 
+                continuing to branch of the "active" branch, as with the
+                backtracking algorithm, there is no active branch at
+                all. Rather, every single time the maze branches off, it
+                does so from a node that is randomly selected from the open
+                set of all nodes.
+            </p>
+            <p>
+                I'm dismayed to see that what I just said is creeping rapidly
+                into the area of incomprehensibility, especially to someone
+                who hasn't done reading on maze generation, graph theory, or
+                something else related. What "randomly selected from the open
+                set of all nodes" means is this: Remember all those pink
+                squares in the backtracking algorithm? Every once in a while 
+                a wave of them would disappear in quick succession. Well, in
+                the randomized Prim's algorithm, every single branch-off comes
+                from a random pink square. Instead of long winding branches
+                weaving themselves through empty space, the maze appears to 
+                spread like a virus from its source. Have a look:
+            </p>
+            
+            <canvas id="prims-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Once again, you can watch the algorithm do its thing. The 
+                active nodes, which are shown in pink, are usually towards
+                the ends of the maze. This is because while there are inner
+                nodes, part of the open set, that cannot be expanded from,
+                if at any point those nodes are selected from the set of
+                open nodes and discovered to be un-expandable, they are
+                subsequently removed from that set (and marked in white).
+                So an inner node marked in pink will usually turn white
+                relatively quickly because once its branchability is tested
+                and determined, it is marked accordingly.
+            </p>
+            <p>
+                Prim's algorithm produces maze that are not quite as
+                aesthetically pleasing as the backtracking mazes, and
+                like the backtracking algorithm, the randomized Prim's
+                algorithm does not generate a uniform spanning tree. 
+                For these reasons, I consider Prim's algorithm inferior
+                to the backtracking algorithm. It was fun to implement,
+                but its practicality is somewhat lacking in my opinion.
+            </p>
+            
+            <h3>Eller's Algorithm</h3>
+            
+            <p>
+                Eller's algorithm is hard. Really hard. It uses sets to
+                expand different paths of the maze, one row at a time.
+                The way in which it works is quite complicated, but I'll
+                do my best to explain it briefly in case you're curious. 
+                If you're not especially technical, you might want to just
+                take a look at the animation and then skip to the next
+                algorithm. Here's Eller's algorithm in action:
+            </p>
+            
+            <canvas id="ellers-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                It works like this. At the beginning, it looks at the first
+                row of cells. Each cell is independent, and each set of
+                cells contains just one cell. Then, it randomly joins
+                cells (and the sets they're a part of) so that there are
+                less sets and some sets have multiple cells in them.
+            </p>
+            <p>
+                The next thing it does is create downard connections. For
+                each cell in the row being looked at, it randomly creates
+                or doesn't create a connection down to the cell below it.
+                If the connection is created, the lower cell is added to
+                the set of which the upper cell is a member. Otherwise,
+                the lower cell is added to its own new set, containing
+                just it. While this is happening, the algorithm also ensures
+                that every single set from the upper row has at least one
+                continuation down to the lower row. This ensures that every
+                single set currently stored has at least one cell that is
+                a member of it on the bottom row.
+            </p>
+            <p>
+                Through this method, along with a little set and graph
+                theory magic that I won't even bother to try to explain, a
+                perfect maze is created. It's one of the coolest algorithms
+                I'm going to implement, as well as one of the most
+                difficult. But I think it works like a charm.
+            </p>
+            
+            <h3>The Randomized Kruskal's Algorithm</h3>
+            <p>
+                This algorithm is actually really cool. It's similar to the
+                randomized Prim's algorithm in that the unaltered version is
+                used to generate minimum spanning trees of weighted graphs.
+                The randomized version randomly removes walls until the maze
+                is completed, and I think among the algorithms I've implemented
+                so far, it's among the coolest and most interesting to watch.
+                Have a look:
+            </p>
+            <canvas id="kruskals-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                The way it works is also surprisingly simple: First, it
+                initializes the maze. Each unconnected cell is a member
+                of its own set (sound familiar?) and each wall dividing
+                two cells is a member of the same set of all walls. Next,
+                walls are selected at random and removed if and only if the
+                two cells it divides are not a member of the same set. If 
+                they are of the same set, the wall is not removed but it is
+                thrown out of the set of all walls, out of consideration. It 
+                then joins the two sets of which the cells are members.
+                It continues doing that until there are no walls left in
+                the set of all walls, at which point the algorithm terminates.
+            </p>
+            <p>
+                This one (along with Eller's algorithm) is my favorite to watch
+                because of the mesmerizing fashion by which walls are removed.
+                It's also pretty interesting that at the end of the algorithm,
+                every single cell in the maze is a member of a single set. I
+                never thought about mazes that way, but any perfect maze must
+                be one set (so every cell can be reached) and each cell must
+                have only one connection to every other cell for it to be
+                considered a "perfect" maze - which explains why cells are 
+                only joined if their respective sets are different. Only one
+                path between previously disconnected sets means only one path
+                from one cell to another. It's pretty cool.
+            </p>
+            <p>
+                Enough of my nerdy ramblings, though. On to the next algorithm.
+            </p>
+            
+            <h3>The Aldous-Broder Algorithm</h3>
+            <p>
+                The Aldous-Broder algorithm is an algorithm for generating
+                uniform spanning trees of a graph. Remember the definition we
+                gave for those earlier? Uniform Spanning Tree means "a maze 
+                generated in such a way that it was randomly selected from a
+                list of every possible maze to be generated." But I'm going
+                to simplify that definition even more by saying this: 
+                <strong>
+                    A maze generation algorithm that generates a uniform 
+                    spanning tree is the only maze generation algorithm that
+                    could, theoretically, generate every maze possible.
+                </strong>
+                Hopefully, that makes a little more sense. They're 
+                probabilistically superior to most other maze generation
+                algorithms, but that property makes these algorithms much
+                more inefficient than the standard ones.
+            </p>
+            <p>
+                This is also one of the few algorithms that is best explained
+                before, not after, the animation is presented. It's almost
+                trivial in its simplicity, and its implementation was not
+                difficult. It starts by picking a random cell in the maze.
+                Then, it jumps to a random neighbor of that cell. If that
+                cell has not yet been visited, it connects it to the previous
+                cell and marks it as visited. Then, it jumps to another random
+                neighbor and does the same thing, continuously jumping randomly
+                until all cells have been visited, at which point the algorithm
+                terminates. Like I said, really simple.
+            </p>
+            <p>This is what it looks like:</p>
+            
+            <canvas id="aldous-broder-maze-animation" class="maze" width="500" height="500"></canvas>
+            
+            <p>
+                Like I said, the algorithm is very inefficient, but it does
+                do the whole uniform spanning tree thing, which is really
+                cool and also unique. There is only one other maze generation
+                algorithm that generates uniform spanning trees. Let's take
+                a look.
+            </p>
+            
+            <h3>Wilson's Algorithm</h3>
+            <p>
+                Wilson's algorithm uses loop-erased random walks to generate
+                a uniform spanning tree for a graph. I'll explain what that
+                means, but for this algorithm I think it's best to present
+                the animation first. I'll warn you that it can take a while
+                to converge on the first step, so you can click on the
+                bold letters below to change the size of the maze. <br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                <span id="wilsons-size">Small</span>
+            </p>
+            
+            <canvas id="wilsons-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Now to explain that "loop-erased random walks" thing. Basically,
+                the way this algorithm works is as follows: First, it picks
+                a random cell (square) and turns it white, marking it as part
+                of the maze. Then, it picks another random cell and starts
+                looking for a path between the two cells. When that path wraps
+                around and runs into itself, a loop is created. That loop is 
+                erased, removed from the path, which then continues from the
+                base of that loop (which is now gone). That's the "loop-erased
+                random walks" bit, and that's why at times the first step
+                takes a while to complete - it's trying to connect a random
+                walk to that one square that we picked in step one.
+            </p>
+            <p>
+                Once the first loop-erased random walk reaches that one lone
+                square, the entire path becmoes part of the maze. Then, we go
+                back to step two, which was to pick another random square and 
+                start a random  walk from there. This time, however, instead 
+                of having to reach a single square, this walk just has to reach 
+                any part of the existing maze, which is now much bigger than a 
+                single square. Once <i>that</i> random walk reaches the maze, 
+                another is created, and another once that one completes. This 
+                occurs continuously until the whole maze is completed, and this 
+                technique, just like the less efficient Aldous-Broder method, 
+                creates a uniform spanning tree. That's right, this bizzare and 
+                unconventional algorithm can create any maze possible. Isn't 
+                that cool?
+            </p>
+            <p>
+                Perhaps the most peculiar and difficult-to-understand aspect
+                of this algorithm is the property that regardless of the
+                method used to select new cells from which to begin the
+                loop-erased random walks, a uniform spanning tree is created.
+                Phrased for those with a background in CS, this means that
+                whether the origin cells are selected iteratively, randomly,
+                using alternating source iteration, or any other convievable 
+                method is irrelevant to the functionality of the algorithm.
+                Phrased for a curious reader without an understanding of what
+                that means, one could instead say this: If the squares from
+                which the random pink paths begin are not selected randomly,
+                the algorithm still works exactly the same way, and it can
+                <i>still</i> produce any maze possible. Pretty crazy, huh?
+            </p>
+            <p>
+                For example, on
+                <a href="https://bost.ocks.org/mike/algorithms/#maze-generation">
+                    this page</a>,
+                if you scroll down a bit, there's an implementation of
+                Wilson's algorithm that selects origin cells iteratively
+                on the grid - that is, whenever a path is closed and made
+                part of the maze, instead of picking a random square to
+                start the next path, the <i>next</i> square is selected,
+                where "next" just means "first, starting from the bottom
+                left." You can watch it work, and in some ways the
+                behaviour is very different from mine. But it still works,
+                which is one of the coolest things about this algorithm.
+            </p>
+            <p>
+                But enough nerding out - this is supposed to be accessible
+                to everyone, after all. On to algorithm number seven.
+            </p>
+            
+            <h3>The Recursive Division Algorithm</h3>
+            <p>
+                This one isn't that great. I included it because I'm
+                including every one in existence, but this one is really
+                nothing special. It divides the maze into two sections,
+                with one path in between. Then, for each of the two sections,
+                it treats them as a maze in and of themselves. It cuts each
+                of <i>those</i> into two, then cuts each of the fourths in 
+                two, and so on until every compartment is too small to further
+                divide. Simple and unimpressive, not to mention the fact that
+                the mazes it generates are very obviously made using this
+                algorithm - there are long, unbroken walls that are 
+                characteristic of the divisions. But regardless of its
+                shortcomings, I did animate it.
+            </p>
+            <canvas id="recursive-division-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <h3>The Hunt and Kill Algorithm</h3>
+            <p>
+                The hunt-and-kill algorithm is in many ways the same as the
+                backtracking algorithm in that it creates long winding paths.
+                However, where the backtracking algorithm backtracks, the
+                hunt-and-kill algorithm simply searches iteratively. This means
+                that when it curls itself into a corner, it gives up on that
+                and looks for the "first" (left to right, one row at a time)
+                cell that neighbors part of the maze. It then continues building 
+                the maze from there. Take a gander:
+            </p>
+            <canvas id="hunt-and-kill-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                This one's interesting. It branches out randomly, then it
+                iteratively fills in the holes it creates through that
+                random branching out. The end result is an animation that
+                creates a few crazy passages and then fills holes in a
+                pattern that resembles how one reads text on a page - 
+                left to right, then top to bottom.
+            </p>
+            <p>
+                Full disclosure, there's not a whole lot to say on this
+                algortihm, since it's so simple. Let's just move on.
+            </p>
+            <h3>The Sidewinder Algorithm</h3>
+            <p>
+                This one's kind of cool in that it's the only other algorithm
+                - besides Eller's - that works on a line-by-line basis. It
+                uses even less memory than its cousin, and it's slightly
+                faster, but at a cost. The mazes don't have a noticable bias,
+                but they're not especially aesthetically pleasing. They have lots
+                of very short dead ends, and there's the obvious shortcoming of,
+                you know, the giant unbroken path across the top. But the way
+                it works is still kind of cool to watch:
+            </p>
+            <canvas id="sidewinder-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                The way this one works is pretty surprising in its simplicity.
+                First, it creates a long bar across the top for reasons that
+                will become clear momentarily. Next, it goes to the second row,
+                and that's where the fun begins. It starts on the first cell, and
+                randomly decides whether or not to continue each time it goes to
+                the next cell. If it continues, it adds that cell to the current
+                set and joins it to the previous cell. If not, it keeps the wall
+                between them and empties the current set, adding the new cell
+                to it. Finally, if the current set was just emptied, it picks a
+                random cell from the previous set and carves upward from there
+                into the row before. That's why the top row is a continuous path
+                - since you can't carve a path upward, it has to continue every
+                time until the whole row is one path.
+            </p>
+            <p>
+                It's not quite as sophistocated as Eller's algorithm, and that
+                simplicity can almost be seen in the apparent inferiority of
+                the mazes it creates, but this algorithm is nonetheless cool. 
+                It's even faster then Eller's, uses even less memory, and,
+                like Eller's, can create infinitely tall mazes. It's pretty
+                cool.
+            </p>
+            <p>
+                Now, believe it or not, we're on to our very last algorithm.
+                Some people like to save the best for last, but that's no fun,
+                bcause then you have to wait for the best, so this algorithm
+                is actually the simplest (and arguably the worst) of all the
+                algorithms we cover. It's called...
+            </p>
+            <h3>The Binary Tree Algorithm</h3>
+            <p>
+                This one is irksomely, frustratingly, infuriatingly simple.
+                You litearlly go, one cell at a time, iteratively, and randomly
+                carve a passage either down or to the right. If a passage can't
+                be carved down, it goes to the right. If a passage can't be carved
+                to the right, it goes down. And if neither is possible, well then
+                I guess we're finished.
+            </p>
+            <p>
+                Like I said, infuriatingly simple. The mazes it creates are also
+                ugly and have a diagonal bias, which doesn't exactly help. And
+                it doesn't work one row at a time, like sidewinder or Eller's. It
+                actually works one <i>cell</i> at a time, which is even stupider.
+                Basically, this algorithm is dumb.
+            </p>
+            <p>
+                But wait. Is it? Sure, it creates miserable, sorry excuses for
+                mazes, but they're still technically perfect mazes, and that
+                fact alone makes the simplicity of the algorithm at least a
+                little bit cooler.  I mean think about it - the fact that such
+                a trivial set of rules comes together to create a spanning tree
+                (a perfect maze) is kind of interesting. The algorithm itself
+                is the worst, but it's not the least <i>cool</i>. I would award
+                that title to the recursive division maze, which is kind of
+                underwhelming both in its functionality and its final products.
+                But enough talk. Before we wrap up, let's take a look at this
+                pathetic, wonderful algorithm:
+            </p>
+            <canvas id="binary-tree-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                It's like... kinda cool to watch, I guess? Whatever. It's there,
+                and its presence means that we've finished. We've implemented all
+                10 maze generation algorithms.
+            </p>
+            
+            <h2>But Like... Why?</h2>
+            <p>
+                Frankly, that's a really good question. Why did I do this? What
+                purpose is there for not only implementing, but animating every
+                single algorithm in existence that does <strong>exactly
+                the same thing</strong>? The answer is pretty simple: More than
+                anything, I love to teach. I love instilling passion and
+                tapping into curiosity, and teaching does exactly that. I
+                don't expect that anyone who reads this page will become
+                inspired and develop a firey passion for the world of
+                computer science. I do hope that after reading this page, or
+                only skimming part of it, or even just watching a few of 
+                the animations, you have a slightly increased understanding
+                of <i>how</i> these algorithms work. Watching them in 
+                progress is the next best thing, short of actually implementing
+                them in code, and the latter requires experience and a whole
+                lot more time than the former. That's why I did this. To
+                educate.
+            </p>
+            <p>
+                Well, that, and it was colossal fun. It was a great learning
+                experience for me, too, and my first passion is learning; 
+                education is a byproduct of that. I loved doing this and the
+                knowledge I gained throughout the process. It's one of my
+                proudest achievements in programming, aside from perhaps my
+                2x2 Rubik's Cube solver in C, a project that is not yet on
+                Github because I used it for my AP Computer Science 
+                Principles class and I can't have it uploaded just yet.
+                But this one, if it doesn't exceed that in difficulty, 
+                certainly approaches it. And I think this one was even more
+                fun, which makes it better. I had a blast making this
+                webpage, and I hope you enjoyed reading it.
+            </p>
+        </div>
+        
+        <script type="text/javascript" src="scripts/binary-tree.js"></script>
+        <script type="text/javascript" src="scripts/sidewinder.js"></script>
+        <script type="text/javascript" src="scripts/hunt-and-kill.js"></script>
+        <script type="text/javascript" src="scripts/recursive-division.js"></script>
+        <script type="text/javascript" src="scripts/wilsons.js"></script>
+        <script type="text/javascript" src="scripts/aldous-broder.js"></script>
+        <script type="text/javascript" src="scripts/kruskals.js"></script>
+        <script type="text/javascript" src="scripts/ellers.js"></script>
+        <script type="text/javascript" src="scripts/prims.js"></script>
+        <script type="text/javascript" src="scripts/backtracking.js"></script>
+        <script type="text/javascript" src="scripts/draw.js"></script>
+    </body>
+
+</html>
