@@ -9,7 +9,7 @@ function ellersMaze(width, height) {
     for (var i = 0; i < height; i++) {
         maze.push([]);
         for (var j = 0; j < width; j++) {
-            maze[i].push(!(i % 2 == 1 && j % 2 == 1));
+            maze[i].push(!(i % 2 == 1 && j % 2 == 1) + 0);
         }
     }
     
@@ -23,6 +23,14 @@ function ellersMaze(width, height) {
     
     
     for (var i = 1; i < height; i += 2) {
+        
+        // Clear sets
+        for (var m = 0; m < sets.length; m++) {
+            for (var n = 0; n < sets[m].length; n++) {
+                if (sets[m][n][0] < i)
+                    sets[m].splice(n, 1);
+            }
+        }
         
         for (var j = 3; j < width; j += 2) {
             var set1 = indexOfSet(sets, [i, j - 2]);
@@ -152,6 +160,14 @@ async function animateEllersMaze(width, height, canvasId, speed) {
     }
     
     for (var i = 1; i < height; i += 2) {
+        
+        // Clear sets
+        for (var m = 0; m < sets.length; m++) {
+            for (var n = 0; n < sets[m].length; n++) {
+                if (sets[m][n][0] < i)
+                    sets[m].splice(n, 1);
+            }
+        }
         
         for (var j = 3; j < width; j += 2) {
             var set1 = indexOfSet(sets, [i, j - 2]);
