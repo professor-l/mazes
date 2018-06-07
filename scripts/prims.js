@@ -15,10 +15,19 @@ function primsMaze(width, height) {
     
     // Opening at top - start of maze
     maze[0][1] = 0;
-    maze[1][1] = 0;
+    
+    var start = [];
+    do {
+        start[0] = Math.floor(Math.random() * height)
+    } while (start[0] % 2 == 0);
+    do {
+        start[1] = Math.floor(Math.random() * width)
+    } while (start[1] % 2 == 0);
+    
+    maze[start[0]][start[1]] = 0;
     
     // First open cell
-    var openCells = [[1, 1]];
+    var openCells = [start];
     
     // While openCells is not empty
     while (openCells.length) {
@@ -115,13 +124,23 @@ async function animatePrimsMaze(width, height, canvasId, speed) {
     
     // Opening at top - start of maze
     maze[0][1] = 0;
-    maze[1][1] = 0;
     
-    ctx.clearRect(rectWidth, 0, rectWidth, rectHeight);
+    var start = [];
+    do {
+        start[0] = Math.floor(Math.random() * height)
+    } while (start[0] % 2 == 0);
+    do {
+        start[1] = Math.floor(Math.random() * width)
+    } while (start[1] % 2 == 0);
+    
+    maze[start[0]][start[1]] = 0;
     
     // First open cell
-    var openCells = [[1, 1]];
-    ctx.fillRect(rectWidth, rectHeight, rectWidth, rectHeight);
+    var openCells = [start];
+    ctx.fillRect(rectWidth * start[1], 
+                 rectHeight * start[0], 
+                 rectWidth, 
+                 rectHeight);
     
     // While openCells is not empty
     while (openCells.length) {
@@ -216,6 +235,7 @@ async function animatePrimsMaze(width, height, canvasId, speed) {
     // Opening at bottom - end of maze
     maze[maze.length - 1][maze[0].length - 2] = 0;
     
+    ctx.clearRect(rectWidth, 0, rectWidth, rectHeight);
     ctx.clearRect((maze.length - 2) * rectWidth,
                   (maze.length - 1) * rectHeight,
                   rectWidth,
