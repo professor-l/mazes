@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="style/main.css">
+        <title>Labirent Oluşturma</title>
+    </head>
+    
+    <body>
+        
+        <div id="contents">
+            <h1>Labirent Oluşturma Algoritmaları - Bir Keşif</h1>
+            
+            <p>
+                Bu web sayfası,
+                <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm">
+                    labirent oluşturma algoritmaları
+                </a>
+                üzerine yaptığım araştırmama adanmıştır.
+            </p>
+            
+            <p>
+                Başlamak için labirent oluşturma üzerine biraz araştırma yaptım. Yukarıda bağlantısını verdiğim ve sık kullanılanların birkaçını özetleyen güzel bir vikipedi sayfası var. Ayrıca, her bir "mükemmel" labirent oluşturma algoritmasının animasyon işlemini yerine getiren uygulamara sahip olduğunu bulduğum
+                <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">
+                    harika bir kaynak
+                </a> 
+                var - yani her bir algoritma tek bir çözümü olan bir labirent üretiyor. Öncelikle bu kaynağı, uygulayacağım her algoritma listesi için kullandım, ancak çalışma şeklini görselleştirmek de oldukça hoş.
+            </p>
+            <p>
+                Bu sayfada, bağlantısını verdiğim sayfada yapılanlara benzer bir şey yapmaya çalışacağım: Her bir algoritmayı canlandırıp ne yaptıklarını kısaca anlatacağım. İdeal olarak, bu, giriş seviyesi yordamsal üretime ilgi duyan insanlar için iyi bir kaynak olacağı gibi, meraklı fakat bilgisayar bilimi (veya bu konuda grafik teorisi) hakkında bir geçmişi olmayan kişiler için ilginç bir okuma olacaktır.
+            </p>
+            <p>
+                Ve nihayet, daha fazla uzatmadan... başlıyoruz.
+            </p>
+        
+            <h3>The Backtracking Algorithm</h3>
+            <p>
+                Bazı insanlar buna ayrıca rastgeleleştirilmiş derinlik-öncelikli arama veya değiştirilmiş derinlik-öncelikli arama olarak da adlandırılır. Fikir göreceli olarak basittir: Algoritma, kendisini bir köşeye dalıncaya kadar rastgele bir yönde yayılır. Daha sonra, bir kez daha dallanabileceği bir düğüme erişinceye kadar adımlarını geriye doğru izler veya geriye doğru geri çekilir. Bu sürece herhangi bir düğümden dallanamayana kadar devam eder, bu noktada algoritma sona erer, çünkü tanım gereği labirent tamamlanmalıdır.
+            </p>
+            <p>
+                Muhtemelen görselleştirildiği zaman anlaması en kolay olandır, işte bir animasyon:
+            </p>
+            
+            <canvas id="backtracking-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Animasyonda tezahür eden kavramları izleyebilirsiniz - algoritma rastgele olarak dallar, periyodik olarak bir çıkmaz veya köşeye doğru keşfeder. Araştırdığı her düğüm açık düğümler listesine eklenir ve pembe renkle işaretlenir. Dalın artık keşfetmeye devam edemediği bir noktaya ulaşıldığında, algoritma geri döner. Keşfedemediği bir düğümden geri döndüğünde, o düğümü açık düğümler listesinden kaldırır ve konum beyaz olur. Bu nedenle, beyaza dönüşen pembe bir dalga, uzun bir geri izleme dizisinin göstergesidir.
+            </p>
+            
+            <p>
+                Tabii ki, bu algoritmanın sadeliği ve hızı, birkaç küçük dezavantaj ile birlikte geliyor. Çoğu labirent oluşturma algoritması gibi, bu da tek biçimli bir yayılma ağacı oluşturmaz. Bu ne anlama geliyor? Eh, "yayılan ağaç" sadece grafik teorisi dilinde labirent demenin iddialı bir yoludur. Buradaki tek tip kelime, "eşit ağırlıkta tüm olası seçeneklerden seçilen" anlamına gelir. Dolayısıyla "tek biçimli yayılma ağacı", üretilebilecek her labirent listesinden rastgele seçilmiş bir şekilde üretilen bir labirent anlamına gelir. Bu algoritma bunu yapmaz.
+            </p>
+            <p>
+                Bununla birlikte, eksikliklerine rağmen, ürettiği labirentlerin yeterliliği ile birlikte geri izleme algoritmasının uygulama kolaylığı, bu amaç için bir dallanma algoritması olarak idealdir. Harika değil, ama kesinlikle yeterince iyi.
+            </p>
+            
+            <h3>The Randomized Prim's Algorithm</h3>
+            
+            <p>
+                Prim algoritması, ağırlıklı bir grafik için minimum yayılan bir ağaç bulmak için tasarlanmış bir algoritmadır. Muhtemelen çok daha süslü bir grafik teorisi dili gibi geliyor ve kesinlikle öyle. Açıkçası, algoritmanın nasıl çalıştığını anlamak için bunun ne anlama geldiğini bilmek zorunda değilsin. Tek bir anahtar farkıyla geri izleme algoritması ile aynı. Her dönüş, geri izleme algoritmasında olduğu gibi "aktif" dalın dalına devam etmek yerine, hiç aktif dal yoktur. Aksine, labirent her dallandığında, bunu tüm düğümlerin açık kümesinden rastgele seçilen bir düğümden yapar.
+            </p>
+            <p>
+                Az önce söylediklerimin, özellikle labirent üretimi, grafik teorisi ya da ilgili başka bir konuda okuma yapmamış birisine hızlı bir şekilde anlaşılmazlık alanına süründüğünü görmekten korkuyorum. "Tüm düğümlerin açık kümesinden rastgele seçilen" şu anlama gelir: Geri izleme algoritmasındaki tüm pembe kareleri hatırlıyor musunuz? Arada bir, bir dalgası art arda kaybolurdu. Rastgeleleştirilmiş Prim'in algoritmasında, her dallanma rastgele pembe bir kareden geliyor. Uzun sarım dalları kendilerini boş alanlardan örmek yerine, labirent kaynağından virüs gibi yayılıyor. Bir göz atın:
+            </p>
+            
+            <canvas id="prims-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Algoritmanın bir şey yaptığını bir kez daha izleyebilirsiniz. Pembe renkte gösterilen aktif düğümler genellikle labirentin uçlarına doğrudur. Bunun nedeni, iç düğümler varken, açık kümenin bir kısmı, genişletilemeyen, herhangi bir noktada bu düğümlerin açık düğüm kümesinden seçildiği ve genişletilemez olduğu keşfedildiği takdirde, bu kümeden çıkarılmalarıdır (ve beyaz ile işaretlenmelidir). Bu nedenle, pembe renkle işaretlenmiş olan bir iç düğüm genellikle nispeten hızlı bir şekilde beyaza dönecektir, çünkü dallanabilirliği bir kez test edilip belirlendiğinde, buna göre işaretlenmiştir.
+            </p>
+            <p>
+                Prim'in algoritması, geri izleme labirentleri kadar estetik olarak hoş olmayan bir labirent üretir ve geri izleme algoritması gibi, rastgeleleştirilmiş Prim'in algoritması tek biçimli bir yayılma ağacı oluşturmaz. Bu nedenlerden dolayı, Prim'in algoritmasını geriye izleme algoritmasından daha düşük görüyorum. Uygulaması eğlenceliydi, ancak pratikliği bence biraz eksik.
+            </p>
+            
+            <h3>Eller's Algorithm</h3>
+            
+            <p>
+                Eller'in algoritması zor. Gerçekten zor. Her seferinde bir satır olan labirentin farklı yollarını genişletmek için kümeler kullanır. Çalışma şekli oldukça karmaşık, ama merak ediyorsanız kısaca açıklamak için elimden geleni yapacağım. Eğer özellikle teknik değilseniz, sadece animasyonu incelemek ve ardından bir sonraki algoritmaya geçmek isteyebilirsiniz. İşte Eller'in algoritması çalışırken:
+            </p>
+            
+            <canvas id="ellers-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Böyle çalışır. Başlangıçta, ilk hücre sırasına bakar. Her hücre bağımsızdır ve her hücre kümesi sadece bir hücre içerir. Daha sonra, rastgele hücreleri (ve bir parçası oldukları kümeleri) birleştirir, böylece daha az küme olur ve bazı kümelerin içinde birden fazla hücre vardır.
+            </p>
+            <p>
+                Bir sonraki şey, downard bağlantıları oluşturmaktır. Bakılan satırdaki her hücre için, rastgele, altındaki hücreye bir bağlantı oluşturur veya oluşturmaz. Bağlantı oluşturulursa, alt hücre, üst hücrenin üyesi olduğu kümeye eklenir. Aksi takdirde, alt hücre, sadece onu içeren kendi yeni kümesine eklenir. Bu olurken, algoritma ayrıca üst sıradaki her bir kümenin en alt sıraya kadar en az bir devamı olmasını sağlar. Bu, halihazırda saklanan her bir setin, alt sırada bir üyesi olan en az bir hücreye sahip olmasını sağlar.
+            </p>
+            <p>
+                Bu yöntem sayesinde, açıklamaya çalışamayacağım küçük bir set ve grafik teorisi sihri ile birlikte mükemmel bir labirent yaratıldı. Uygulayacağım en havalı algoritmalardan biri ve en zorlarından biri. Ama bence bir cazibe gibi çalışıyor.
+            </p>
+            
+            <h3>The Randomized Kruskal's Algorithm</h3>
+            <p>
+                Bu algoritma aslında gerçekten harika. Bu, değiştirilmemiş versiyonun grafik ağırlıklı ağaçlardan oluşan ağaç üretmek için kullanıldığı rastgeleleştirilmiş Prim algoritmasına benzer. Rastgeleleştirilmiş sürüm, labirent tamamlanana kadar duvarları rastgele kaldırır, ve şu ana kadar uyguladığım algoritmalar arasında izlemesi en havalı ve en ilginç olanı olduğunu düşünüyorum. Bir göz atın:
+            </p>
+            <canvas id="kruskals-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                Çalışma şekli şaşırtıcı derecede basittir: Birincisi, labirenti başlatır. Bağlanmamış her hücre, kendi setinin bir üyesidir (kulağınıza tanıdık geldi mi?) ve iki hücreyi bölen her duvar, tüm duvarların aynı setinin üyesidir. Daha sonra, duvarlar rastgele seçilir ve eğer böldüğü iki hücre aynı kümenin üyesi değilse kaldırılır. Aynı setten yapılmışlarsa, duvar kaldırılmaz, ancak tüm duvar setinden çıkarılır, dikkate alınmaz. Daha sonra hücrelerin üyesi olduğu iki kümeye katılır. Algoritmanın sona erdiği noktada tüm duvarların setinde duvar kalmayıncaya kadar bunu yapmaya devam eder.
+            </p>
+            <p>
+                Bu (Eller'in algoritmasıyla birlikte), duvarların kaldırıldığı büyüleyici moda nedeniyle izlemeyi en sevdiğim algoritmalardan birisidir. Algoritmanın sonunda, labirentteki her bir hücrenin bir tek kümenin üyesi olması da oldukça ilginç. Labirentleri hiç bu şekilde düşünmedim, ancak herhangi bir mükemmel labirent bir set olmalıdır (böylece her hücreye ulaşılabilir) ve her hücrenin "mükemmel" bir labirent olarak kabul edilmesi için diğer hücrelere yalnızca bir bağlantısı olmalıdır - Hücreler sadece kendi setleri farklı ise birleştirilir. Önceden bağlantısı kesilmiş kümeler arasındaki yalnızca bir yol, bir hücreden diğerine yalnızca bir yol anlamına gelir. Çok havalı.
+            </p>
+            <p>
+                Yaptığım bu asosyal muhabbet yeterli. Bir sonraki algoritmaya.
+            </p>
+            
+            <h3>The Aldous-Broder Algorithm</h3>
+            <p>
+                Aldous-Broder algoritması, grafiğin tek biçimli yayılan ağaçlarını üretmek için bir algoritmadır. Daha öncekiler için verdiğimiz tanımı hatırlıyor musun? Tek Biçimli Yayılma Ağacı, "oluşturulacak her labirent listesinden rastgele seçildiği şekilde üretilen bir labirent" anlamına gelir. Ancak şunu söyleyerek bu tanımı daha da basitleştireceğim:
+                <strong>
+                    Tek biçimli bir yayılma ağacı oluşturan bir labirent üretme algoritması, teorik olarak mümkün olan her labirenti oluşturabilecek tek labirent üretme algoritmasıdır.
+                </strong>
+                Umarım, bu biraz daha mantıklı gelecektir. Muhtemelen diğer labirent oluşturma algoritmalarından daha üstündür, ancak bu özellik bu algoritmaları standart olanlardan çok daha verimsiz kılar.
+            </p>
+            <p>
+                Bu aynı zamanda, animasyonun sunulmasından önce değil, daha önce açıklanmış olan birkaç algoritmadan biridir. Basitliği bakımından neredeyse önemsizdi ve uygulanması zor değildi. Labirentte rastgele bir hücre toplayarak başlar. Sonra o hücrenin rastgele bir komşusuna atlar. Bu hücre henüz ziyaret edilmediyse, onu önceki hücreye bağlar ve ziyaret edildiği şekilde işaretler. Ardından, rastgele bir başka komşuya atlar ve aynı şeyi yapar, algoritma sona erer ve bu noktada tüm hücreler ziyaret edilinceye kadar sürekli olarak rastgele atlar. Dediğim gibi, gerçekten basit.
+            </p>
+            <p>Göründüğü gibi:</p>
+            
+            <canvas id="aldous-broder-maze-animation" class="maze" width="500" height="500"></canvas>
+            
+            <p>
+                Dediğim gibi, algoritma çok verimsiz, ancak gerçekten düzgün ve aynı zamanda benzersiz olan tüm biçimli ağaç yapısını yapıyor. Tek biçimli yayılan ağaçlar üreten yalnızca bir labirent üretme algoritması var. Hadi bir bakalım.
+            </p>
+            
+            <h3>Wilson's Algorithm</h3>
+            <p>
+                Wilson'un algoritması, bir grafik için tek biçimli bir yayılma ağacı oluşturmak için döngüden silinmiş rastgele yürüyüşler kullanır. Bunun ne anlama geldiğini açıklayacağım, ancak bu algoritma için öncelikle animasyonu sunmanın en iyisi olduğunu düşünüyorum. İlk adımda birleşmenin biraz zaman alacağı konusunda sizi uyaracağım, böylece labirentin boyutunu değiştirmek için aşağıdaki koyu harflere tıklayabilirsiniz. <br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                <span id="wilsons-size">Small</span>
+            </p>
+            
+            <canvas id="wilsons-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <p>
+                Şimdi "döngüsel olarak silinen rastgele yürüyüşler" olayını açıklamak için. Temel olarak, bu algoritmanın çalışma şekli aşağıdaki gibidir: İlk olarak, rastgele bir hücreyi (kare) alır ve beyaza döndürür, labirentin parçası olarak işaretler. Daha sonra, başka bir rastgele hücre alır ve iki hücre arasında bir yol aramaya başlar. Bu yol etrafına dolanıp kendi içine girdiğinde, bir döngü oluşturulur. Bu döngü silinir, yoldan çıkarılır, bu daha sonra o döngünün tabanından devam eder (ki bu şimdi gider). Bu, “döngüden silinen rastgele yürüyüşler” biti ve bu nedenle ilk adımın tamamlanması biraz zaman alıyor - bu, adım adım seçtiğimiz kareye rastgele bir yürüyüş bağlamaya çalışıyor.
+            </p>
+            <p>
+                İlk döngüden silinen rastgele yürüyüş tek bir kareye ulaştığında, tüm yol labirentin bir parçasını oluşturur. Sonra, ikinci adıma geri dönüyoruz, başka bir rastgele kare seçmek ve oradan rastgele bir yürüyüş başlatmak için. Bununla birlikte, bu kez, tek bir kareye ulaşmak yerine, bu yürüyüşün sadece şimdiki bir kareden çok daha büyük olan mevcut labirentin herhangi bir yerine ulaşması gerekiyor. Bu rastgele yürüyüş labirente ulaştığında, bir başkası yaratılır ve bir başkası tamamlanır. Bu, tüm labirent tamamlanana kadar sürekli olarak meydana gelir ve bu teknik, daha az verimli Aldous-Broder yöntemi gibi, düzgün bir yayılma ağacı oluşturur. Doğru, bu çok garip (sıradışı) ve geleneksel olmayan algoritma mümkün olan her labirenti oluşturabilir. Çok havalı değil mi?
+            </p>
+            <p>
+                Belki de bu algoritmanın en tuhaf ve anlaşılması zor yanı, döngüden silinen rastgele yürüyüşlere başlamak için yeni hücreler seçmek için kullanılan yöntemden bağımsız olarak tek biçimli bir yayılma ağacının yaratılmasıdır. Bunun ne anlama geldiğini anlamadan meraklı bir okuyucu için ifade edilirse, bunun yerine şunu söyleyebiliriz: Eğer rastgele pembe yolların başladığı kareler rastgele seçilmezse, algoritma yine de tam olarak aynı şekilde çalışır ve <i>hâlâ</i> herhangi bir labirent üretebilmesi mümkün. Oldukça çılgın, ha? <a href="https://en.wikipedia.org/wiki/Computer_science">CS</a>'de geçmişe sahip olanlar için ifade edildiğinde, köken hücrelerinin alternatif kaynak yinelemesi kullanılarak yinelemeli, rastgele seçilip seçilmediği veya algoritmanın işlevselliği ile ilgili başka bir uygun yöntem olmadığı anlamına gelir.
+            </p>
+            <p>
+                Örneğin,
+                <a href="https://bost.ocks.org/mike/algorithms/#maze-generation">
+                    bu sayfada</a>,
+                    biraz aşağı kaydırırsanız, Wilson'un algoritmasını, ızgara üzerinde yinelemeli olarak kök hücre seçen bir algoritma uygulaması vardır - yani, bir yol kapatıldığında ve rastgele bir kare seçmek yerine labirentin bir parçası yapıldığında sonraki yolu başlatmak için, sonraki kare seçilidir, burada "sonraki" sadece "ilk önce, sol alttan başlayarak" anlamına gelir. Çalışmasını izleyebilirsin ve bazı yönlerden davranışı benimkinden çok farklı. Ama yine de çalışıyor, bu algoritma hakkındaki en harika şeylerden biri.
+            </p>
+            <p>
+                Ama bu kadar inek muhabbeti yeterli - sonuçta bunun, herkes için anlaşılabilir olması gerekiyordu. Yedi numaralı algoritmaya geçelim.
+            </p>
+            
+            <h3>The Recursive Division Algorithm</h3>
+            <p>
+                Bu o kadar iyi değil. Dahil ettim çünkü her birini dahil ediyorum, ama bu gerçekten özel bir şey değil. Labirenti aralarında bir yol olacak şekilde iki bölüme ayırır. Daha sonra, iki bölümün her biri için, kendilerine bir labirent gibi davranır. Bunların her birini ikiye böler, sonra dördüncülerin her birini ikiye böler ve her bölme daha fazla bölünmek için çok küçük olana kadar devam eder. Basit ve etkileyici değil, ürettiği labirentlerin bu algoritmayı kullanarak çok açık bir şekilde yapıldığı gerçeğinden bahsetmiyorum bile - bölünmelerin karakteristiği olan uzun ve kırılmamış duvarlar var. Fakat eksiklikleri ne olursa olsun, canlandırdım.
+            </p>
+            <canvas id="recursive-division-maze-animation" class="maze" width="505" height="505"></canvas>
+            
+            <h3>The Hunt and Kill Algorithm</h3>
+            <p>
+                Avla ve öldür algoritması birçok yönden uzun sarma yolları yaratmasıyla geriye dönüş algoritmasıyla aynıdır. Bununla birlikte, geri izleme algoritmasının geri izleme yaptığı yerde, avla ve öldür algoritması basitçe yinelemeli olarak arama yapar. Bunun anlamı, bir köşeye kıvrıldığı zaman, bundan vazgeçtiği ve labirentin bir parçası olan “ilk” (soldan sağa, bir seferde bir satır) hücre aradığı anlamına gelir. Daha sonra labirent oradan oluşturmaya etmeye devam ediyor. Bir göz atın:
+            </p>
+            <canvas id="hunt-and-kill-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                Bu algoritma ilginç. Rastgele dallar oluşturuyor, sonra rasgele dallanma yoluyla oluşturduğu delikleri yinelemeli olarak dolduruyor. Sonuç, birkaç çılgın geçiş yaratan bir animasyondur ve daha sonra bir sayfadaki metni nasıl okuduğunu gösteren bir desende delikler doldurur - soldan sağa, sonra yukarıdan aşağıya.
+            </p>
+            <p>
+                Tam açıklama, bu algoritmada söylenecek çok şey yok, çünkü çok basit. Sadece devam edelim.
+            </p>
+            <h3>The Sidewinder Algorithm</h3>
+            <p>
+                Bu algoritma ise, sıradışı bir şekilde çalışan - Eller'inki dışında - başka tek algoritma olması açısından harika. Kuzeninden daha az hafıza kullanıyor ve biraz daha hızlı, ancak bir bedeli var. Labirentlerde göze çarpan bir önyargı yok, ancak özellikle estetik açıdan hoş değiller. Çok sayıda çok kısa çıkmaz uçları var ve üst kısımdaki dev kırılmamış yolun bariz bir eksikliği var. Ancak, çalışma şekli hala izlemek için harika:
+            </p>
+            <canvas id="sidewinder-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                Bunun işleyiş şekli sadeliği açısından oldukça şaşırtıcı. Birincisi, bir anda netleşecek nedenlerden dolayı tepede uzun bir çubuk oluşturur. Sonra, ikinci satıra gider ve eğlencenin başladığı yer burasıdır. İlk hücrede başlar ve rastgele bir sonraki hücreye geçtiğinde devam edip etmeyeceğine karar verir. Devam ederse, o hücreyi geçerli kümeye ekler ve bir önceki hücreye ekler. Eğer değilse, aralarındaki duvarı korur ve mevcut seti boşaltır, buna yeni hücre ekler. Son olarak, eğer mevcut küme henüz boşaltılmışsa, önceki kümeden rastgele bir hücre alır ve oradan daha önce sıraya doğru yukarı doğru ilerler. Bu yüzden en üst sıra sürekli bir yoldur - yukarı doğru bir yol açamadığınız için, tüm sıra bir yol olana kadar her zaman devam etmesi gerekir.
+            </p>
+            <p>
+                Bu, Eller'in algoritması kadar karmaşık değildir ve sadeliği yarattığı labirentlerin görünüşte düşüklüğünde neredeyse görülebilir, ancak bu algoritma yine de harikadır. "Eller's"ten daha hızlı, daha az bellek kullanıyor ve "Eller's" gibi, sonsuz derecede labirent oluşturabilir. Çok havalı.
+            </p>
+            <p>
+                Şimdi, ister inan ister inanma, son algoritmamız için yola çıktık. Bazı insanlar en iyisini son olarak saklamayı sever, ama bu hiç eğlenceli değil, çünkü o zaman en iyisini beklemek zorundasınız, bu yüzden bu algoritma aslında içerdiğimiz tüm algoritmaların en basit (ve tartışmasız en kötüsü). Adı...
+            </p>
+            <h3>The Binary Tree Algorithm</h3>
+            <p>
+                Bu, çirkin, sinir bozucu, çaresizce basittir. Kelimenin tam anlamıyla, bir seferde bir hücre, yinelemeli ve rastgele aşağı veya sağa bir geçişi oymak. Bir geçit oyulamazsa, sağa doğru gider. Bir geçit sağa oyulamazsa, aşağı iner. Ve ikisi de mümkün değilse, o zaman sanırım bitti.
+            </p>
+            <p>
+                Dediğim gibi, çaresizce basit. Yarattığı labirentler de çirkin ve tam olarak yardımcı olmayan bir diyagonal önyargıya sahip. Ve bir seferde bir satır işlemez, ya Sidewinder ya da Eller's gibi. Aslında her seferinde bir <i>hücre</i>de çalışıyor, ki daha da aptalca. Temel olarak, bu algoritma aptal.
+            </p>
+            <p>
+                Fakat bekle. Bu algoritma kadar mı? Tabii, labirent için sefil, üzgün mazeretler yaratır, ancak bunlar hala teknik olarak mükemmel labirentlerdir ve algoritma basitliğini en azından biraz daha soğuk hale getirir. Bir düşünün - bu kadar önemsiz bir kurallar dizisinin bir kapsayan bir ağaç (mükemmel bir labirent) oluşturmak için bir araya gelmesi ilginçtir. Algoritmanın kendisi en kötüsü, ama en <i>iyisi</i> değil. Bu ünvanı, hem işlevselliği hem de nihai ürünlerinde göze çarpan "Recursive Division Algorithm" labirentine verecektim(!). Ama yeterince konuşma. Kaydırmadan önce, şu acınası ve harika algoritmaya bir göz atalım:
+            </p>
+            <canvas id="binary-tree-maze-animation" class="maze" width="505" height="505"></canvas>
+            <p>
+                Sanki... izlemek çok güzel sanırım? Her neyse. 10 labirent üretme algoritmasının hepsini gerçekleştirdik.
+            </p>
+            
+            <h2>Ama... Neden?</h2>
+            <p>
+                Açıkçası, bu gerçekten iyi bir soru. Bunu neden yaptım? Sadece uygulamak için değil, <strong>tamamı ile aynı şeyi yapan</strong> ve varolan her bir algoritmayı canlandırmamın amacı ne? Cevap oldukça basit: Her şeyden çok, öğretmeyi seviyorum. Tutku uyandırmayı ve meraka dalmayı seviyorum ve öğretmek de bana aynısını yapıyor. Bu sayfayı okuyan hiç kimsenin ilham almasını ve bilgisayar bilimi dünyasına karşı sert bir tutku geliştirmesini beklemiyorum. Umarım bu sayfayı okuduktan sonra veya sadece bir kısmını gözden geçirdikten sonra, hatta birkaç animasyon izledikten sonra, bu algoritmaların nasıl çalıştığını biraz anlamışsınızdır. Onları ilerleme katederken izlemek, bir sonraki en iyi şeydir, gerçekte bunları kodda uygulamak kaçınılmazdır ve uygulamak için deneyim ve çok fazla zaman harcamanızı gerektirir. Bu yüzden bunu yaptım. Eğitmek için.
+            </p>
+            <p>
+                İşte bu, ayrıca bu benim için muazzam bir eğlenceydi. Benim için de harika bir öğrenme deneyimi oldu ve benim ilk tutkum öğrenme; Eğitim bunun bir yan ürünüdür. Öğrenmeyi ve süreç boyunca edindiğim bilgileri uygulamayı çok sevdim. Programlamadaki en büyük başarılarımdan biriydi, belki de C'deki 2x2 Rubik Küp çözücüm dışında, henüz GitHub'da olmayan bir proje, çünkü <a href ="https://en.wikipedia.org/wiki/Advanced_Placement">AP</a>(çn: herkesçe bilinen bir şey olmadığı için "AP"ye olan bağlantıyı ben yaptım) Bilgisayar Bilimi İlkeleri dersim için kullandım ve henüz yükleyemedim. Ancak bu, bu zorluğu aşmak için bir yol açıyor, ve bence bu daha da eğlenceli, bu da onu daha iyi kılıyor. Bu web sayfasını yapmaktan büyük zevk aldım ve umarım okumaktan zevk alırsınız. 
+            </p>
+            <p>
+                Her zaman olduğu gibi 
+                <a href="https://github.com/professor-l/mazes">
+                    kaynak kodu
+                </a>,
+                inceltmek veya incelemek isteyenler için GitHub'da mevcuttur. Diğer işlerim de orada bulunabilir ve sorularınız, önerileriniz veya selamlamalarınızla istediğiniz zaman
+                <a href="mailto:professorlwebdev@gmail.com">
+                    benimle iletişim kurabilirsiniz
+                </a>.
+                Bu proje liseden mezun olduğum aynı gün bitmişti ve bir sonraki projem (çok daha kolay) bu harika labirentleri <i>çözmek</i> için A* uygulamak olacak. O zaman belki buna animasyon uygularım, böylece insanlar grafik geçişi hakkında biraz bilgi sahibi olurlar. Ama şimdilik birkaç aylığına işim bitti. Açık havaya olan sevgime hitap etmek için Haziran, Temmuz ve Ağustos ayında bir kamp ve yürüyüş programına gidiyorum. Bu yüzden umarım Ağustos'ta bir süre yine benden haber alırsınız. Okuduğunuz için teşekkürler!
+            </p>
+        </div>
+        
+        <script type="text/javascript" src="scripts/binary-tree.js"></script>
+        <script type="text/javascript" src="scripts/sidewinder.js"></script>
+        <script type="text/javascript" src="scripts/hunt-and-kill.js"></script>
+        <script type="text/javascript" src="scripts/recursive-division.js"></script>
+        <script type="text/javascript" src="scripts/wilsons.js"></script>
+        <script type="text/javascript" src="scripts/aldous-broder.js"></script>
+        <script type="text/javascript" src="scripts/kruskals.js"></script>
+        <script type="text/javascript" src="scripts/ellers.js"></script>
+        <script type="text/javascript" src="scripts/prims.js"></script>
+        <script type="text/javascript" src="scripts/backtracking.js"></script>
+        <script type="text/javascript" src="scripts/draw.js"></script>
+    </body>
+
+</html>
